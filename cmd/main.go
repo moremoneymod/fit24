@@ -4,10 +4,16 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"strings"
+	"syscall"
+	"time"
 
 	"fit24/handler"
+	"fit24/middleware"
 	"fit24/repository"
 	"fit24/service"
 
@@ -16,6 +22,20 @@ import (
 
 func main() {
 	ctx := context.Background()
+
+	logLevelStr := getEnv("LOG_LEVEL", "info")
+	var level slog.Level
+	switch strings.ToLower(logLevelStr) {
+	case "debug":
+		level = slog.LevelDebug
+	case "warn":
+		level = slog.LevelWarn
+	case "error":
+		level = slog.LevelError
+	default:
+		level = slog.LevelInfo
+	}
+	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level})))
 
 	dbUser := getEnv("DB_USER", "postgres")
 	dbPassword := getEnv("DB_PASSWORD", "postgres")
@@ -29,30 +49,67 @@ func main() {
 
 	pool, err := pgxpool.New(ctx, connStr)
 	if err != nil {
-		log.Fatal("Ошибка конфигурации пула pgx: ", err)
+		log.Fatal(err)
 	}
 	defer pool.Close()
 
 	if err := pool.Ping(ctx); err != nil {
-		log.Fatal("Не удалось подключиться к базе данных: ", err)
+		log.Fatal(err)
 	}
-	fmt.Println("Успешное подключение к БД")
+	slog.Info("успешное подключение к БД")
+
+	dbTimeout := getDurationEnv("DB_TIMEOUT", "3s")
+	readTimeout := getDurationEnv("SERVER_READ_TIMEOUT", "10s")
+	writeTimeout := getDurationEnv("SERVER_WRITE_TIMEOUT", "10s")
+	shutdownTimeout := getDurationEnv("SHUTDOWN_TIMEOUT", "5s")
 
 	repo := repository.NewPostgresRepository(pool)
 	leadService := service.NewLeadService(repo)
-	httpHandler := handler.NewHTTPHandler(leadService)
+	httpHandler := handler.NewHTTPHandler(leadService, dbTimeout)
+
+	mux := http.NewServeMux()
 
 	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fs)
+	mux.Handle("/", fs)
 
-	http.HandleFunc("/api/order", httpHandler.HandleOrder)
-	http.HandleFunc("/api/contact", httpHandler.HandleContact)
+	mux.HandleFunc("/api/order", httpHandler.HandleOrder)
+	mux.HandleFunc("/api/contact", httpHandler.HandleContact)
+	mux.HandleFunc("/api/health", httpHandler.HandleHealth)
+
+	finalHandler := middleware.Recovery(middleware.Logging(mux))
 
 	port := getEnv("PORT", "8080")
-	fmt.Printf("Сервер успешно запущен по адресу http://localhost:%s\n", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		log.Fatal("Ошибка запуска сервера: ", err)
+	srv := &http.Server{
+		Addr:         ":" + port,
+		Handler:      finalHandler,
+		ReadTimeout:  readTimeout,
+		WriteTimeout: writeTimeout,
 	}
+
+	go func() {
+		slog.Info("сервер запущен", slog.String("url", "http://localhost:"+port))
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	<-stop
+
+	slog.Info("получен сигнал плавной остановки сервера")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		slog.Error("ошибка при принудительной остановке сервера", slog.String("error", err.Error()))
+	} else {
+		slog.Info("все HTTP-соединения успешно завершены")
+	}
+
+	slog.Info("сервер полностью остановлен")
 }
 
 func getEnv(key, fallback string) string {
@@ -60,4 +117,13 @@ func getEnv(key, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func getDurationEnv(key, fallback string) time.Duration {
+	val := getEnv(key, fallback)
+	d, err := time.ParseDuration(val)
+	if err != nil {
+		return time.Duration(0)
+	}
+	return d
 }

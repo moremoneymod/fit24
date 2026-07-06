@@ -1,18 +1,24 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"fit24/domain"
 )
 
 type HTTPHandler struct {
-	service domain.LeadService
+	service   domain.LeadService
+	dbTimeout time.Duration
 }
 
-func NewHTTPHandler(service domain.LeadService) *HTTPHandler {
-	return &HTTPHandler{service: service}
+func NewHTTPHandler(service domain.LeadService, dbTimeout time.Duration) *HTTPHandler {
+	return &HTTPHandler{
+		service:   service,
+		dbTimeout: dbTimeout,
+	}
 }
 
 type orderDTO struct {
@@ -35,7 +41,7 @@ type response struct {
 
 func (h *HTTPHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		h.sendJSON(w, http.StatusMethodNotAllowed, response{Success: false, Message: "Метод не поддерживается"})
+		h.sendJSON(w, http.StatusMethodNotAllowed, response{Success: false, Message: "Метод не разрешен"})
 		return
 	}
 
@@ -45,7 +51,10 @@ func (h *HTTPHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := h.service.SubmitOrder(r.Context(), dto.Plan, dto.Name, dto.Phone, dto.Email)
+	ctx, cancel := context.WithTimeout(r.Context(), h.dbTimeout)
+	defer cancel()
+
+	_, err := h.service.SubmitOrder(ctx, dto.Plan, dto.Name, dto.Phone, dto.Email)
 	if err != nil {
 		h.sendJSON(w, http.StatusBadRequest, response{Success: false, Message: err.Error()})
 		return
@@ -56,7 +65,7 @@ func (h *HTTPHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 
 func (h *HTTPHandler) HandleContact(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		h.sendJSON(w, http.StatusMethodNotAllowed, response{Success: false, Message: "Метод не поддерживается"})
+		h.sendJSON(w, http.StatusMethodNotAllowed, response{Success: false, Message: "Метод не разрешен"})
 		return
 	}
 
@@ -66,13 +75,20 @@ func (h *HTTPHandler) HandleContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := h.service.SubmitContact(r.Context(), dto.Name, dto.Phone, dto.Message)
+	ctx, cancel := context.WithTimeout(r.Context(), h.dbTimeout)
+	defer cancel()
+
+	_, err := h.service.SubmitContact(ctx, dto.Name, dto.Phone, dto.Message)
 	if err != nil {
 		h.sendJSON(w, http.StatusBadRequest, response{Success: false, Message: err.Error()})
 		return
 	}
 
 	h.sendJSON(w, http.StatusOK, response{Success: true})
+}
+
+func (h *HTTPHandler) HandleHealth(w http.ResponseWriter, r *http.Request) {
+	h.sendJSON(w, http.StatusOK, map[string]string{"status": "healthy"})
 }
 
 func (h *HTTPHandler) sendJSON(w http.ResponseWriter, status int, data interface{}) {

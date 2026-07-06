@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIT24 — Фитнес-центр 24/7</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header__inner">
+            <div class="logo">FIT<span>24</span></div>
+            
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li><a href="#features">Преимущества</a></li>
+                    <li><a href="#pricing">Тарифы</a></li>
+                    <li><a href="#reviews">Отзывы</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+
+            <div class="header__actions">
+                <a href="#" class="btn btn-outline" id="callBtn">
+                    <i class="fas fa-phone"></i> +7 937 732 70 59
+                </a>
+                <button class="burger" id="burgerBtn" aria-label="Меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <ul>
+                <li><a href="#features" class="mobile-link">Преимущества</a></li>
+                <li><a href="#pricing" class="mobile-link">Тарифы</a></li>
+                <li><a href="#reviews" class="mobile-link">Отзывы</a></li>
+                <li><a href="#contact" class="mobile-link">Контакты</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero__wrapper">
+            <div class="hero__content">
+                <div class="hero__tag">🔥 24/7 без выходных</div>
+                <h1 class="hero__title">
+                    Твой ритм — <br>
+                    <span class="gradient-text">наша сила</span>
+                </h1>
+                <p class="hero__desc">
+                    Современный фитнес-клуб, где каждый найдёт своё направление. 
+                    Работаем для вас круглосуточно.
+                </p>
+                <!-- Тег изменен на ссылку <a> для плавного скролла к тарифам -->
+                <a href="#pricing" class="btn btn-primary" id="startBtn">
+                    <i class="fas fa-play"></i> Начать тренировку
+                </a>
+                <div class="hero__stats">
+                    <div>
+                        <span class="stat-number" data-target="12">0</span>
+                        <span class="stat-label">лет опыта</span>
+                    </div>
+                    <div>
+                        <span class="stat-number" data-target="24">0</span>
+                        <span class="stat-label">часа доступа</span>
+                    </div>
+                    <div>
+                        <span class="stat-number" data-target="8">0</span>
+                        <span class="stat-label">залов</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero__image">
+                <div class="hero__image-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <p>Современное оборудование<br>и зоны функционального тренинга</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">Почему <span>FIT24</span></h2>
+            <div class="features-grid">
+                <div class="feature-card" data-delay="0">
+                    <i class="fas fa-clock"></i>
+                    <h3>Круглосуточно</h3>
+                    <p>Доступ в клуб 24 часа 7 дней в неделю</p>
+                </div>
+                <div class="feature-card" data-delay="100">
+                    <i class="fas fa-user-graduate"></i>
+                    <h3>Тренеры</h3>
+                    <p>Сертифицированные инструкторы с опытом</p>
+                </div>
+                <div class="feature-card" data-delay="200">
+                    <i class="fas fa-wifi"></i>
+                    <h3>Зоны отдыха</h3>
+                    <p>Wi‑Fi, коворкинг, smoothie‑бар</p>
+                </div>
+                <div class="feature-card" data-delay="300">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Функционал</h3>
+                    <p>Кардио, силовой, кроссфит, йога</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Выбери <span>план</span></h2>
+            <div class="pricing-grid">
+                <!-- Тариф 1 -->
+                <div class="pricing-card">
+                    <div class="plan-name">Старт</div>
+                    <div class="price">2 990 <small>₽/мес</small></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Тренажёрный зал</li>
+                        <li><i class="fas fa-check"></i> Кардиозона</li>
+                        <li><i class="fas fa-times"></i> Групповые занятия</li>
+                    </ul>
+                    <button class="btn btn-secondary select-plan" data-plan="Старт">Выбрать</button>
+                </div>
+                <!-- Тариф 2 (Хит) -->
+                <div class="pricing-card popular">
+                    <div class="badge">🔥 Хит</div>
+                    <div class="plan-name">Премиум</div>
+                    <div class="price">5 490 <small>₽/мес</small></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Все зоны клуба</li>
+                        <li><i class="fas fa-check"></i> Групповые занятия</li>
+                        <li><i class="fas fa-check"></i> Персональный план</li>
+                    </ul>
+                    <button class="btn btn-secondary select-plan" data-plan="Премиум">Выбрать</button>
+                </div>
+                <!-- Тариф 3 -->
+                <div class="pricing-card">
+                    <div class="plan-name">Безлимит</div>
+                    <div class="price">8 990 <small>₽/мес</small></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Премиум + гости</li>
+                        <li><i class="fas fa-check"></i> Солярий / массаж</li>
+                        <li><i class="fas fa-check"></i> Скидка 20% в баре</li>
+                    </ul>
+                    <button class="btn btn-secondary select-plan" data-plan="Безлимит">Выбрать</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="reviews">
+        <div class="container">
+            <h2 class="section-title">Что говорят <span>наши</span> гости</h2>
+            <div class="reviews-wrapper">
+                <div class="reviews-track" id="reviewsTrack">
+                
+                    <div class="review-item">
+                        <div class="stars">★★★★★</div>
+                        <p>«Лучший зал в городе. Всегда чисто, современные тренажёры, приятный персонал.»</p>
+                        <div class="author">Анна Л. <span>посещает 2 года</span></div>
+                    </div>
+                    <div class="review-item">
+                        <div class="stars">★★★★★</div>
+                        <p>«Очень удобно, что круглосуточно. Прихожу после ночных смен — всегда рады.»</p>
+                        <div class="author">Мария С. <span>тренер по боксу</span></div>
+                    </div>
+                    <div class="review-item">
+                        <div class="stars">★★★★★</div>
+                        <p>«Отличное место для функционального тренинга. Зона кроссфита — огонь!»</p>
+                        <div class="author">Алия А. <span>участница соревнований</span></div>
+                    </div>
+                    <div class="review-item">
+                        <div class="stars">★★★★★</div>
+                        <p>«Профессиональные тренеры, всегда помогут с техникой. Рекомендую!»</p>
+                        <div class="author">Марина П. <span>занимается 1 год</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Свяжитесь <span>с нами</span></h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Адрес</h4>
+                            <p>г. Москва, ул. Спортивная, 24</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Телефон</h4>
+                            <p>+7 937 732 70 59</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>info@fit24.ru</p>
+                        </div>
+                    </div>
+                    <div class="contact-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm" novalidate>
+                    <div class="form-group">
+                        <input type="text" name="name" id="formName" placeholder="Ваше имя" required>
+                        <span class="error-message" id="nameError">Имя должно содержать не менее 2-х символов</span>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" name="phone" id="formPhone" placeholder="Телефон" required>
+                        <span class="error-message" id="phoneError">Введите корректный номер телефона</span>
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" id="formMessage" placeholder="Сообщение" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="formSubmitBtn">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <div class="footer__copy">© 2026 FIT24 — Фитнес-центр 24/7</div>
+            <div class="footer__social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="modal">
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose" type="button">&times;</button>
+            
+            <div id="modalFormState">
+                <h3>🏋️ Оформить заявку</h3>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">
+                    Выбранный тариф: <span id="modalPlanName" style="color: #facc15; font-weight: 700;">Премиум</span>
+                </p>
+                <form class="contact-form" id="modalForm" novalidate>
+                    <input type="hidden" name="plan" id="modalPlanInput">
+                    
+                    <div class="form-group">
+                        <input type="text" name="name" id="modalName" placeholder="Ваше имя" required>
+                        <span class="error-message" id="modalNameError">Имя должно содержать не менее 2-х символов</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="tel" name="phone" id="modalPhone" placeholder="Телефон" required>
+                        <span class="error-message" id="modalPhoneError">Введите корректный номер телефона</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" name="email" id="modalEmail" placeholder="Email" required>
+                        <span class="error-message" id="modalEmailError">Введите корректный email-адрес</span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="modalSubmitBtn" style="width: 100%; margin-top: 10px;">Отправить</button>
+                </form>
+            </div>
+
+            <div id="modalSuccessState" style="display: none;">
+                <h3 id="modalSuccessTitle">🎉 Спасибо!</h3>
+                <p id="modalSuccessText" style="margin: 15px 0;">Ваша заявка успешно отправлена</p>
+                <p id="modalSuccessSub" style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">Менеджер свяжется с вами в течение 15 минут.</p>
+                <button class="btn btn-primary" id="modalConfirm" style="width: 100%;">Отлично!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
